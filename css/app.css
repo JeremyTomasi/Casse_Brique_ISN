@@ -1,0 +1,24 @@
+@font-face {
+  font-family: Raleway;
+  src: url("../fonts/Raleway.ttf");
+}
+
+#playZone {
+  border: 1px dotted red;
+  width: 600px;
+  height: 400px;
+  background-color: white;
+  margin-left: 500px;
+}
+
+html {
+  background-image: url("http://s1.1zoom.me/big3/660/Mountaineering_Fantastic_world_The_Legend_of_Zelda_524326_1920x1080.jpg");
+  background-size: 100%;
+}
+
+#title {
+  color: white;
+  font-family: Raleway;
+  text-align: center;
+  margin-bottom: 20px;
+}
