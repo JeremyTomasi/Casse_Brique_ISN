@@ -6,40 +6,55 @@ let nbrVie = 3
 let canvasJeu = zoneJeu.getContext('2d')
 
 // Longueur et largeur des briques
-let width = 20
-let height = 5
 
 // Hauteur initiale des briques dans le canvas
 let y = 3
 
-/**Permet de dessiner une ligne de briques
- * @param nombreBriques Le nombre de briques à dessiner
- * @param y Hauteur des briques dans le canvas
- * @param couleur Couleur des briques
- */
-function drawBrique(nombreBriques,y,couleur = "green"){
-	let x = 2
-	for(let i = 0; i < nombreBriques; i++){
-		canvasJeu.beginPath()
-		canvasJeu.fillStyle = couleur
-		canvasJeu.fillRect(x,y,width,height)
-		canvasJeu.closePath()
-		x = x + 5 + width
+let nbBriquesParLigne = 12
+let nbreLignes = 5
+
+let bricks = []
+
+
+for(let l = 0; l < nbreLignes; l++){
+	bricks[l] = [];
+	for(let r = 0; r < nbBriquesParLigne; r++){
+		bricks[l][r] = {x: 0, y: 0}
 	}
 }
 
+console.log(bricks)
+/**Permet de dessiner les briques
+ * @param couleur Couleur des briques
+ */
+
+function drawBrique(couleur = "green") {
+	let x = 2
+	let width = 20
+	let height = 5
+
+	for (let c = 0; c < nbreLignes; c++) {
+		for (let r = 0; r < nbBriquesParLigne; r++) {
+			bricks[c][r].x = x
+			bricks[c][r].y = y
+			canvasJeu.fillStyle = couleur
+			canvasJeu.fillRect(x, y, width, height)
+			x = x + width + 5
+		}
+	}
+}
 
 for(let i = 0; i < 5; i++){
 	if(i == 0){
-		drawBrique(12,y,"red")
+		drawBrique("red")
 	} else if (i == 1){
-		drawBrique(12,y,"blue")
+		drawBrique("blue")
 	} else if (i == 2){
-		drawBrique(12,y,"yellow")
+		drawBrique("yellow")
 	} else if (i == 3){
-		drawBrique(12,y,"pink")
+		drawBrique("pink")
 	} else {
-		drawBrique(12,y)
+		drawBrique("purple")
 	}
 	y = y + 10
 }
