@@ -18,14 +18,16 @@ export function drawBrique(couleur = "green") {
     let width = 20
     let height = 5
 
-    for (let c = 0; c < nbreLignes; c++) {
-        bricks[c] = [];
+    for (let l = 0; l < nbreLignes; l++) {
+        bricks[l] = [];
         for (let r = 0; r < nbBriquesParLigne; r++) {
-            bricks[c][r] = {x: 0, y: 0}
-            bricks[c][r].x = x
-            bricks[c][r].y = y
+            bricks[l][r] = {x: 0, y: 0}
+            bricks[l][r].x = x
+            bricks[l][r].y = y
+            canvasJeu.beginPath()
             canvasJeu.fillStyle = couleur
             canvasJeu.fillRect(x, y, width, height)
+            canvasJeu.closePath()
             x = x + width + 5
         }
     }
@@ -59,3 +61,13 @@ export function draw(){
     drawBall()
     drawPaddle()
 }
+
+
+document.addEventListener('keydown',function(e) {
+    let toucheClavier = e.key
+    if (toucheClavier == "ArrowLeft") {
+        barreX -= 7
+    } else if (toucheClavier == "ArrowRight") {
+        barreX += 7
+    }
+})
