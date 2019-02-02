@@ -5,8 +5,6 @@
 
 #playZone {
   border: 1px dotted red;
-  width: 600px;
-  height: 400px;
   background-color: white;
   margin-left: 500px;
 }
