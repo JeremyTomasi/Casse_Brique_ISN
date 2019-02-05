@@ -6,6 +6,14 @@ let bricks = []
 let nbBricks = 12
 let nbLines = 5
 
+let posXBall = 150
+let posYBall = 315
+
+let dx = 1
+let dy = 0.75
+
+let jeuEnRoute = false
+
 
 console.log(bricks)
 
@@ -62,8 +70,10 @@ function drawBall() {
     let smash_ball = new Image(100, 100)
     smash_ball.src = "imgs/smash_ball.png"
     smash_ball.addEventListener('load', function () {
-        canvasJeu.drawImage(smash_ball, 150, 315, 35, 35)
+        canvasJeu.drawImage(smash_ball, posXBall, posYBall, 35, 35)
     })
+    posYBall -= dy
+    posXBall += dx
 }
 
 /**
@@ -81,17 +91,28 @@ function drawPaddle(){
  */
 export function draw(){
     canvasJeu.clearRect(0,0,zoneJeu.width,zoneJeu.height)
-    drawBricks()
     drawBall()
+    drawBricks()
     drawPaddle()
+    detectCollision()
 }
 
 
 document.addEventListener('keydown',function(e) {
     let toucheClavier = e.key
     if (toucheClavier == "ArrowLeft") {
-        barreX -= 7
+        barreX -= 10
     } else if (toucheClavier == "ArrowRight") {
-        barreX += 7
+        barreX += 10
     }
 })
+
+function detectCollision(){
+    if(posXBall < 0 || posXBall > zoneJeu.width){
+        dx = -dx
+    }
+
+    if(posYBall < 0 || posYBall > zoneJeu.height){
+        dy = -dy
+    }
+}
