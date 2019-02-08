@@ -1,4 +1,4 @@
-import {canvasJeu, zoneJeu} from "../app.js";
+import {canvasJeu,zoneJeu, zoneWidth} from "../app.js";
 
 //Position initiale de la barre
 let barreX = 130
@@ -6,16 +6,22 @@ let bricks = []
 let nbBricks = 12
 let nbLines = 5
 
+
 let posXBall = 150
 let posYBall = 315
 
-let dx = 1
-let dy = 0.75
+let widthBall = 35
+let heightBall = 35
 
+let barreY = 350
+let barreWidth = 70
+let barreHeight = 5
+let dx = 0.5
+let dy = 0.5
 let jeuEnRoute = false
 
 
-console.log(bricks)
+//console.log(bricks)
 
 export function drawBricks(){
 
@@ -62,7 +68,6 @@ export function drawBricks(){
     }
 }
 
-
 /**
  * Permet de dessiner la balle
  */
@@ -70,8 +75,9 @@ function drawBall() {
     let smash_ball = new Image(100, 100)
     smash_ball.src = "imgs/smash_ball.png"
     smash_ball.addEventListener('load', function () {
-        canvasJeu.drawImage(smash_ball, posXBall, posYBall, 35, 35)
+        canvasJeu.drawImage(smash_ball, posXBall, posYBall, widthBall, heightBall)
     })
+
     posYBall -= dy
     posXBall += dx
 }
@@ -80,14 +86,16 @@ function drawBall() {
  * Permet de dessiner la barre de déplacement
  */
 function drawPaddle(){
+    //console.log(`Position de la barre : ${barreX}`)
     canvasJeu.beginPath()
     canvasJeu.fillStyle = "gray"
-    canvasJeu.fillRect(barreX ,350 , 70, 5)
+    canvasJeu.fillRect(barreX ,barreY , barreWidth, barreHeight)
     canvasJeu.closePath()
+
 }
 
 /**
- * Dessine la balle et la barre de déplacement
+ * Fonction principale du script
  */
 export function draw(){
     canvasJeu.clearRect(0,0,zoneJeu.width,zoneJeu.height)
@@ -96,23 +104,38 @@ export function draw(){
     drawPaddle()
     detectCollision()
 }
-
-
-document.addEventListener('keydown',function(e) {
-    let toucheClavier = e.key
-    if (toucheClavier == "ArrowLeft") {
-        barreX -= 10
-    } else if (toucheClavier == "ArrowRight") {
-        barreX += 10
-    }
-})
+detectKeyboard()
+function detectKeyboard(){
+    document.addEventListener('keydown',function(e) {
+        let toucheClavier = e.key
+        if (toucheClavier == "ArrowLeft" && barreX != 0) {
+            barreX -= 10
+        } else if (toucheClavier == "ArrowRight" && barreX != 530) {
+            barreX += 10
+        }
+    })
+}
 
 function detectCollision(){
-    if(posXBall < 0 || posXBall > zoneJeu.width){
+
+
+    // Si la position en ordonnée de la belle est inférieure à 0 ou est supérieure à la hauteur de la zone de jeu
+    if(posYBall < 0 || posYBall > zoneJeu.height - 30){
+        dy = -dy
+    }
+
+    //Si la position en abscisse de la balle est inférieure à 0 ou est supérieur à la longueur de la zone de jeu
+    if(posXBall > zoneJeu.width - 30 || posXBall < 0){
         dx = -dx
     }
 
-    if(posYBall < 0 || posYBall > zoneJeu.height){
+    let leftCornerPosition = posYBall + heightBall
+
+    let zoneTolerance = 10
+
+    if(leftCornerPosition >= barreY && leftCornerPosition <= barreY && posXBall >= barreX - zoneTolerance && posXBall <= barreX + barreWidth + zoneTolerance){
+        console.log('Collision')
         dy = -dy
     }
+
 }
