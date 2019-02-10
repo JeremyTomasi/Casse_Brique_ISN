@@ -13,27 +13,33 @@ let posYBall = 315
 let widthBall = 35
 let heightBall = 35
 
+let brickWidth = 45
+let brickHeight = 20
+
 let barreY = 350
 let barreWidth = 70
 let barreHeight = 5
-let dx = 0.5
-let dy = 0.5
+let dx = 1
+let dy = 0.75
 let jeuEnRoute = false
 
 
-//console.log(bricks)
+
+for(let l = 0; l < nbLines; l++){
+    bricks[l] = [];
+    for(let b = 0; b < nbBricks; b++){
+        bricks[l][b] = { x: 0, y: 0, visible : true};
+    }
+}
 
 export function drawBricks(){
 
-    let x = 60
+    let x =2
     let y = 20
-    let width = 35
-    let height = 20
     let couleur;
     for(let c = 0; c < nbLines; c++){
-        bricks[c] = [];
         if(c != 0){
-            x = 60
+            x = 2
             y = y + 30
         }
         switch(c){
@@ -54,16 +60,15 @@ export function drawBricks(){
                 break
         }
         for(let r = 0; r < nbBricks; r++){
-            bricks[c][r] = { x: 0, y: 0, visible : true};
-            bricks[c][r].x = x
-            bricks[c][r].y = y
             if(bricks[c][r].visible){
+                bricks[c][r].x = x
+                bricks[c][r].y = y
                 canvasJeu.beginPath()
                 canvasJeu.fillStyle = couleur
-                canvasJeu.fillRect(x,y,width,height)
+                canvasJeu.fillRect(x,y,brickWidth,brickHeight)
                 canvasJeu.closePath()
             }
-            x = x + width + 5
+            x = x + brickWidth + 5
         }
     }
 }
@@ -101,20 +106,18 @@ export function draw(){
     canvasJeu.clearRect(0,0,zoneJeu.width,zoneJeu.height)
     drawBall()
     drawBricks()
-    drawPaddle()
     detectCollision()
+    drawPaddle()
 }
-detectKeyboard()
-function detectKeyboard(){
-    document.addEventListener('keydown',function(e) {
-        let toucheClavier = e.key
-        if (toucheClavier == "ArrowLeft" && barreX != 0) {
-            barreX -= 10
-        } else if (toucheClavier == "ArrowRight" && barreX != 530) {
-            barreX += 10
-        }
-    })
-}
+
+document.addEventListener('keydown',function(e) {
+    let toucheClavier = e.key
+    if (toucheClavier == "ArrowLeft" && barreX != 0) {
+        barreX -= 10
+    } else if (toucheClavier == "ArrowRight" && barreX != 530) {
+        barreX += 10
+    }
+})
 
 function detectCollision(){
 
@@ -134,8 +137,20 @@ function detectCollision(){
     let zoneTolerance = 10
 
     if(leftCornerPosition >= barreY && leftCornerPosition <= barreY && posXBall >= barreX - zoneTolerance && posXBall <= barreX + barreWidth + zoneTolerance){
-        console.log('Collision')
+        //console.log('Collision')
         dy = -dy
     }
 
+    let upCenterPoint = posXBall + widthBall / 2
+    
+    for(let l = 0; l < nbLines;l++){
+        for(let b = 0; b < nbBricks; b++){
+            let brick = bricks[l][b]
+            if(posYBall <= brick.y + brickHeight && upCenterPoint >= brick.x && upCenterPoint <= brick.x + brickWidth && brick.visible){
+                dy = -dy
+                console.log(`Effacement de la brique ${b + 1} sur la ligne ${l + 1}`)
+                brick.visible = false
+            }
+        }
+    }
 }
