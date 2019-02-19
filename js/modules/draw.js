@@ -1,29 +1,49 @@
 import {canvasJeu,zoneJeu, zoneWidth} from "../app.js";
 
-//Position initiale de la barre
+//Position X initiale de la barre
 let barreX = 130
+
+// Position Y de la barre
+let barreY = 350
+
+//Taille de la barre
+let barreWidth = 70
+
+//Hauteur de la barre
+let barreHeight = 5
+
+// Tableau contenant toutes les briques
 let bricks = []
+
+// Nombre de briques par ligne
 let nbBricks = 12
+
+//Nombre de lignes de briques
 let nbLines = 5
 
-
+// Position X initiale de la balle
 let posXBall = 150
+
+// Position Y initiale de la balle
 let posYBall = 315
 
+// Taille de la balle
 let widthBall = 35
+
+// Hauteur de la balle
 let heightBall = 35
 
+// Taille de la brique
 let brickWidth = 45
+
+// Hauteur de la brique
 let brickHeight = 20
 
-let barreY = 350
-let barreWidth = 70
-let barreHeight = 5
+// Vitesse sur l'axe X de la balle
 let dx = 1
+
+//Vitesse sur l'axe Y de la balle
 let dy = 0.75
-let jeuEnRoute = false
-
-
 
 for(let l = 0; l < nbLines; l++){
     bricks[l] = [];
@@ -32,6 +52,7 @@ for(let l = 0; l < nbLines; l++){
     }
 }
 
+// Permet de dessiner les briques
 export function drawBricks(){
 
     let x =2
@@ -110,6 +131,7 @@ export function draw(){
     drawPaddle()
 }
 
+// Détecte les entrées clavier pour le déplacement de la barre
 document.addEventListener('keydown',function(e) {
     let toucheClavier = e.key
     if (toucheClavier == "ArrowLeft" && barreX != 0) {
@@ -119,6 +141,8 @@ document.addEventListener('keydown',function(e) {
     }
 })
 
+
+// Permet de détecter les collisions avec les briques et les côtés du canvas
 function detectCollision(){
 
 
@@ -142,7 +166,7 @@ function detectCollision(){
     }
 
     let upCenterPoint = posXBall + widthBall / 2
-    
+
     for(let l = 0; l < nbLines;l++){
         for(let b = 0; b < nbBricks; b++){
             let brick = bricks[l][b]
