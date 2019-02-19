@@ -1,47 +1,29 @@
-import {canvasJeu,zoneJeu, zoneWidth} from "../app.js";
+import {canvasJeu,zoneJeu} from "../app.js";
 
-//Position X initiale de la barre
-let barreX = 130
-
-// Position Y de la barre
-let barreY = 350
-
+// Position initiale sur l'axe X et sur l'axe Y de la barre de déplacement
+let barreX, barreY
+//Position initiale sur l'axe X et sur l'axe Y de la balle (pt sup gauche)
+let posXBall, posYBall
 //Taille de la barre
 let barreWidth = 70
-
 //Hauteur de la barre
 let barreHeight = 5
-
 // Tableau contenant toutes les briques
 let bricks = []
-
 // Nombre de briques par ligne
 let nbBricks = 12
-
 //Nombre de lignes de briques
 let nbLines = 5
-
-// Position X initiale de la balle
-let posXBall = 150
-
-// Position Y initiale de la balle
-let posYBall = 315
-
 // Taille de la balle
-let widthBall = 35
-
+let widthBall = 30
 // Hauteur de la balle
-let heightBall = 35
-
+let heightBall = 30
 // Taille de la brique
 let brickWidth = 45
-
 // Hauteur de la brique
 let brickHeight = 20
-
 // Vitesse sur l'axe X de la balle
-let dx = 1
-
+let dx = 0.5
 //Vitesse sur l'axe Y de la balle
 let dy = 0.75
 
@@ -88,6 +70,11 @@ export function drawBricks(){
                 canvasJeu.fillStyle = couleur
                 canvasJeu.fillRect(x,y,brickWidth,brickHeight)
                 canvasJeu.closePath()
+
+                canvasJeu.beginPath()
+                canvasJeu.fillStyle = "brown"
+                canvasJeu.fillRect(bricks[c][r].x,bricks[c][r].y,2,2)
+                canvasJeu.closePath()
             }
             x = x + brickWidth + 5
         }
@@ -106,6 +93,14 @@ function drawBall() {
 
     posYBall -= dy
     posXBall += dx
+}
+
+export function initGame(){
+
+    posXBall = zoneJeu.width / 2
+    posYBall = zoneJeu.height / 1.26 - 10
+    barreX = zoneJeu.width / 2 - 20
+    barreY = zoneJeu.height / 1.14
 }
 
 /**
@@ -145,36 +140,60 @@ document.addEventListener('keydown',function(e) {
 // Permet de détecter les collisions avec les briques et les côtés du canvas
 function detectCollision(){
 
-
-    // Si la position en ordonnée de la belle est inférieure à 0 ou est supérieure à la hauteur de la zone de jeu
-    if(posYBall < 0 || posYBall > zoneJeu.height - 30){
-        dy = -dy
-    }
-
-    //Si la position en abscisse de la balle est inférieure à 0 ou est supérieur à la longueur de la zone de jeu
-    if(posXBall > zoneJeu.width - 30 || posXBall < 0){
+    let centerPointX = posXBall + widthBall / 2
+    let DownPointY = posYBall + heightBall
+    let centerMiddleY = posYBall + heightBall / 2
+    let rightPointX = posXBall + widthBall
+    // Collisions sur les côtés latéraux
+    if(posXBall <= 0 || posXBall + widthBall >= zoneJeu.width){
         dx = -dx
     }
-
-    let leftCornerPosition = posYBall + heightBall
-
-    let zoneTolerance = 10
-
-    if(leftCornerPosition >= barreY && leftCornerPosition <= barreY && posXBall >= barreX - zoneTolerance && posXBall <= barreX + barreWidth + zoneTolerance){
-        //console.log('Collision')
+    //Collisions en haut du canvas
+    if(posYBall <= 0 || DownPointY >= zoneJeu.height){
         dy = -dy
     }
 
-    let upCenterPoint = posXBall + widthBall / 2
 
-    for(let l = 0; l < nbLines;l++){
-        for(let b = 0; b < nbBricks; b++){
-            let brick = bricks[l][b]
-            if(posYBall <= brick.y + brickHeight && upCenterPoint >= brick.x && upCenterPoint <= brick.x + brickWidth && brick.visible){
+
+    //Collisions sur la barre
+    if(centerPointX >= barreX && centerPointX <= barreX + barreWidth && DownPointY >= barreY){
+        dy = -dy
+    }
+
+    for(let l = 0; l < nbLines; l++){
+        for(let c = 0; c < nbBricks;c++){
+            let b = bricks[l][c]
+            //Collisions si la balle tape la brique en bas
+            if(centerPointX >= b.x - 5 && rightPointX <= b.x + 5 + brickWidth && posYBall < b.y + brickHeight && b.visible){
                 dy = -dy
-                console.log(`Effacement de la brique ${b + 1} sur la ligne ${l + 1}`)
-                brick.visible = false
+                console.log("Collision prévue")
+                b.visible = false
             }
+
+
         }
     }
+
+    // Debug
+    canvasJeu.beginPath()
+    canvasJeu.fillStyle = "green"
+    canvasJeu.fillRect(centerPointX,posYBall,5,5)
+    canvasJeu.closePath()
+
+
+    canvasJeu.beginPath()
+    canvasJeu.fillStyle = "green"
+    canvasJeu.fillRect(centerPointX,DownPointY,5,5)
+    canvasJeu.closePath()
+
+    canvasJeu.beginPath()
+    canvasJeu.fillStyle = "green"
+    canvasJeu.fillRect(posXBall,centerMiddleY,5,5)
+    canvasJeu.closePath()
+
+    canvasJeu.beginPath()
+    canvasJeu.fillStyle = "green"
+    canvasJeu.fillRect(rightPointX,centerMiddleY,5,5)
+    canvasJeu.closePath()
+
 }
