@@ -11,13 +11,13 @@ let barreHeight = 5
 // Tableau contenant toutes les briques
 let bricks = []
 // Nombre de briques par ligne
-let nbBricks = 12
+let nbBricks = 9
 //Nombre de lignes de briques
 let nbLines = 5
 // Taille de la balle
-let widthBall = 30
+let widthBall = 25
 // Hauteur de la balle
-let heightBall = 30
+let heightBall = 25
 // Taille de la brique
 let brickWidth = 45
 // Hauteur de la brique
@@ -96,8 +96,9 @@ function drawBall() {
 }
 
 export function initGame(){
-
+    //zoneJeu.width / 2
     posXBall = zoneJeu.width / 2
+    //zoneJeu.height / 1.26 - 10
     posYBall = zoneJeu.height / 1.26 - 10
     barreX = zoneJeu.width / 2 - 20
     barreY = zoneJeu.height / 1.14
@@ -164,9 +165,16 @@ function detectCollision(){
         for(let c = 0; c < nbBricks;c++){
             let b = bricks[l][c]
             //Collisions si la balle tape la brique en bas
-            if(centerPointX >= b.x - 5 && rightPointX <= b.x + 5 + brickWidth && posYBall < b.y + brickHeight && b.visible){
+            if(centerPointX >= b.x  && rightPointX <= b.x + brickWidth && posYBall < b.y + brickHeight && b.visible && DownPointY >= b.y + brickHeight){
                 dy = -dy
-                console.log("Collision prévue")
+                console.log("Collision côté inférieur")
+                b.visible = false
+            }
+
+            //Collisions côté droit de la brique
+            if(posXBall <= b.x + brickWidth && centerMiddleY <= b.y + brickHeight && centerMiddleY >= b.y && b.visible && rightPointX >= b.x + brickWidth){
+                dx = -dx
+                console.log("Collision côté à droite de la brique")
                 b.visible = false
             }
 
