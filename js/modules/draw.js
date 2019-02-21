@@ -1,6 +1,6 @@
 import {canvasJeu,zoneJeu} from "../app.js";
 
-// Position initiale sur l'axe X et sur l'axe Y de la barre de déplacement
+// Position initiale sur l'axe X et sur l'axe Y de la barre de déplacement (pt sup gauche)
 let barreX, barreY
 //Position initiale sur l'axe X et sur l'axe Y de la balle (pt sup gauche)
 let posXBall, posYBall
@@ -11,7 +11,7 @@ let barreHeight = 5
 // Tableau contenant toutes les briques
 let bricks = []
 // Nombre de briques par ligne
-let nbBricks = 9
+let nbBricks = 12
 //Nombre de lignes de briques
 let nbLines = 5
 // Taille de la balle
@@ -27,6 +27,7 @@ let dx = 0.5
 //Vitesse sur l'axe Y de la balle
 let dy = 0.75
 
+// Crée un objet pour chaque brique
 for(let l = 0; l < nbLines; l++){
     bricks[l] = [];
     for(let b = 0; b < nbBricks; b++){
@@ -95,10 +96,9 @@ function drawBall() {
     posXBall += dx
 }
 
+// Initialise le jeu
 export function initGame(){
-    //zoneJeu.width / 2
     posXBall = zoneJeu.width / 2
-    //zoneJeu.height / 1.26 - 10
     posYBall = zoneJeu.height / 1.26 - 10
     barreX = zoneJeu.width / 2 - 20
     barreY = zoneJeu.height / 1.14
@@ -177,31 +177,14 @@ function detectCollision(){
                 console.log("Collision côté à droite de la brique")
                 b.visible = false
             }
-
+            //Collision côté gauche
+            if(rightPointX >= b.x && centerMiddleY <= b.y + brickHeight && centerMiddleY >= b.y && b.visible && rightPointX <= b.x + brickWidth){
+                dx = -dx
+                console.log("Collision côté à gauche de la brique")
+                b.visible = false
+            }
 
         }
     }
-
-    // Debug
-    canvasJeu.beginPath()
-    canvasJeu.fillStyle = "green"
-    canvasJeu.fillRect(centerPointX,posYBall,5,5)
-    canvasJeu.closePath()
-
-
-    canvasJeu.beginPath()
-    canvasJeu.fillStyle = "green"
-    canvasJeu.fillRect(centerPointX,DownPointY,5,5)
-    canvasJeu.closePath()
-
-    canvasJeu.beginPath()
-    canvasJeu.fillStyle = "green"
-    canvasJeu.fillRect(posXBall,centerMiddleY,5,5)
-    canvasJeu.closePath()
-
-    canvasJeu.beginPath()
-    canvasJeu.fillStyle = "green"
-    canvasJeu.fillRect(rightPointX,centerMiddleY,5,5)
-    canvasJeu.closePath()
 
 }
