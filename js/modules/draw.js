@@ -1,5 +1,7 @@
 import {canvasJeu,zoneJeu} from "../app.js";
 
+let result = document.getElementById("result")
+
 // Position initiale sur l'axe X et sur l'axe Y de la barre de déplacement (pt sup gauche)
 let barreX, barreY
 //Position initiale sur l'axe X et sur l'axe Y de la balle (pt sup gauche)
@@ -23,15 +25,17 @@ let brickWidth = 45
 // Hauteur de la brique
 let brickHeight = 20
 // Vitesse sur l'axe X de la balle
-let dx = 0.5
+let dx = 0.75
 //Vitesse sur l'axe Y de la balle
-let dy = 0.75
+let dy = 1
+
+let score = 0
 
 // Crée un objet pour chaque brique
 for(let l = 0; l < nbLines; l++){
     bricks[l] = [];
     for(let b = 0; b < nbBricks; b++){
-        bricks[l][b] = { x: 0, y: 0, visible : true};
+        bricks[l][b] = { x: 0, y: 0, visible : true, couleur: null};
     }
 }
 
@@ -48,34 +52,31 @@ export function drawBricks(){
         }
         switch(c){
             case 0:
-                couleur = "red"
+                couleur = "black"
                 break
             case 1:
-                couleur = "green"
+                couleur = "purple"
                 break
             case 2:
-                couleur = "yellow"
+                couleur = "red"
                 break
             case 3:
-                couleur = "aquamarine"
+                couleur = "orange"
                 break
             case 4:
-                couleur = "pink"
+                couleur = "yellow"
                 break
         }
         for(let r = 0; r < nbBricks; r++){
             if(bricks[c][r].visible){
                 bricks[c][r].x = x
                 bricks[c][r].y = y
+                bricks[c][r].couleur = couleur
                 canvasJeu.beginPath()
                 canvasJeu.fillStyle = couleur
                 canvasJeu.fillRect(x,y,brickWidth,brickHeight)
                 canvasJeu.closePath()
 
-                canvasJeu.beginPath()
-                canvasJeu.fillStyle = "brown"
-                canvasJeu.fillRect(bricks[c][r].x,bricks[c][r].y,2,2)
-                canvasJeu.closePath()
             }
             x = x + brickWidth + 5
         }
@@ -125,6 +126,7 @@ export function draw(){
     drawBricks()
     detectCollision()
     drawPaddle()
+    displayScore()
 }
 
 // Détecte les entrées clavier pour le déplacement de la barre
@@ -136,6 +138,10 @@ document.addEventListener('keydown',function(e) {
         barreX += 10
     }
 })
+
+function displayScore(){
+    result.innerHTML = `Score : ${score}`
+}
 
 
 // Permet de détecter les collisions avec les briques et les côtés du canvas
@@ -161,30 +167,66 @@ function detectCollision(){
         dy = -dy
     }
 
+    if (barreX <= centerPointX && centerPointX <= (barreX + 23.3) && barreY <= DownPointY){
+        console.log("Balle entre barreX et barreX + 23.3")
+        setInterval(function(){
+            dy = dy + 0.05
+        },5000)
+        dx = 0.75
+        dy = 1
+
+    }else if (((barreX + 46.6) <= centerPointX && centerPointX <= (barreX + barreWidth)) && barreY <= DownPointY) {
+        console.log("Balle entre barreX + 46.6 et barreX + barreWidth")
+        setInterval(function(){
+            dx += 0.2
+            dy += 0.15
+        },5000)
+        dx = 0.75
+        dy = 1
+    }
+
+
     for(let l = 0; l < nbLines; l++){
         for(let c = 0; c < nbBricks;c++){
             let b = bricks[l][c]
+            let bs = bricks[l][c + 1]
             //Collisions si la balle tape la brique en bas
-            if(centerPointX >= b.x  && rightPointX <= b.x + brickWidth && posYBall < b.y + brickHeight && b.visible && DownPointY >= b.y + brickHeight){
+            if(centerPointX > b.x  && rightPointX < b.x + brickWidth && b.visible && posYBall <= b.y + brickHeight){
                 dy = -dy
                 console.log("Collision côté inférieur")
                 b.visible = false
+                score++;
             }
 
             //Collisions côté droit de la brique
-            if(posXBall <= b.x + brickWidth && centerMiddleY <= b.y + brickHeight && centerMiddleY >= b.y && b.visible && rightPointX >= b.x + brickWidth){
+            if(posXBall < b.x + brickWidth && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX > b.x + brickWidth){
                 dx = -dx
                 console.log("Collision côté à droite de la brique")
                 b.visible = false
+                score++;
             }
             //Collision côté gauche
-            if(rightPointX >= b.x && centerMiddleY <= b.y + brickHeight && centerMiddleY >= b.y && b.visible && rightPointX <= b.x + brickWidth){
+            if(rightPointX > b.x && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX < b.x + brickWidth){
                 dx = -dx
                 console.log("Collision côté à gauche de la brique")
                 b.visible = false
+                score++;
             }
 
-        }
-    }
+            if(bs != undefined && centerPointX > b.x + brickWidth && centerPointX < bs.x && posYBall <= b.y + brickHeight && b.visible && bs.visible){
+              dy = -dy
+                b.visible = false
+                bs.visible = false
+                score = score + 2
+            }
 
-}
+          //console.log(bs)
+
+            canvasJeu.beginPath()
+            canvasJeu.fillStyle = "green"
+            canvasJeu.fillRect(centerPointX,posYBall,5,5)
+            canvasJeu.closePath()
+
+        }
+      }
+    }
