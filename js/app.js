@@ -4,7 +4,6 @@ import {initGame,draw} from "./modules/draw.js";
 export let zoneJeu = document.getElementById('playZone')
 
 
-let nbrVie = 3
 //Définit le canvas en 2D
 export let canvasJeu = zoneJeu.getContext('2d')
 

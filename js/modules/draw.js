@@ -1,7 +1,8 @@
-import {canvasJeu,zoneJeu} from "../app.js";
+import {canvasJeu, zoneJeu} from "../app.js";
 
 let result = document.getElementById("result")
 
+let nbrVie = 3
 // Position initiale sur l'axe X et sur l'axe Y de la barre de déplacement (pt sup gauche)
 let barreX, barreY
 //Position initiale sur l'axe X et sur l'axe Y de la balle (pt sup gauche)
@@ -25,32 +26,38 @@ let brickWidth = 45
 // Hauteur de la brique
 let brickHeight = 20
 // Vitesse sur l'axe X de la balle
-let dx = 0.75
+let dx = 1
 //Vitesse sur l'axe Y de la balle
 let dy = 1
 
+let x = 0
+
+let jeuEnRoute
+
 let score = 0
 
+let username
+
 // Crée un objet pour chaque brique
-for(let l = 0; l < nbLines; l++){
+for (let l = 0; l < nbLines; l++) {
     bricks[l] = [];
-    for(let b = 0; b < nbBricks; b++){
-        bricks[l][b] = { x: 0, y: 0, visible : true, couleur: null};
+    for (let b = 0; b < nbBricks; b++) {
+        bricks[l][b] = {x: 0, y: 0, visible: true, couleur: null};
     }
 }
 
 // Permet de dessiner les briques
-export function drawBricks(){
+export function drawBricks() {
 
-    let x =2
+    let x = 2
     let y = 20
     let couleur;
-    for(let c = 0; c < nbLines; c++){
-        if(c != 0){
+    for (let c = 0; c < nbLines; c++) {
+        if (c != 0) {
             x = 2
             y = y + 30
         }
-        switch(c){
+        switch (c) {
             case 0:
                 couleur = "black"
                 break
@@ -67,14 +74,14 @@ export function drawBricks(){
                 couleur = "yellow"
                 break
         }
-        for(let r = 0; r < nbBricks; r++){
-            if(bricks[c][r].visible){
+        for (let r = 0; r < nbBricks; r++) {
+            if (bricks[c][r].visible) {
                 bricks[c][r].x = x
                 bricks[c][r].y = y
                 bricks[c][r].couleur = couleur
                 canvasJeu.beginPath()
                 canvasJeu.fillStyle = couleur
-                canvasJeu.fillRect(x,y,brickWidth,brickHeight)
+                canvasJeu.fillRect(x, y, brickWidth, brickHeight)
                 canvasJeu.closePath()
 
             }
@@ -93,12 +100,16 @@ function drawBall() {
         canvasJeu.drawImage(smash_ball, posXBall, posYBall, widthBall, heightBall)
     })
 
+
+}
+
+function moveBall() {
     posYBall -= dy
     posXBall += dx
 }
 
 // Initialise le jeu
-export function initGame(){
+export function initGame() {
     posXBall = zoneJeu.width / 2
     posYBall = zoneJeu.height / 1.26 - 10
     barreX = zoneJeu.width / 2 - 20
@@ -108,11 +119,11 @@ export function initGame(){
 /**
  * Permet de dessiner la barre de déplacement
  */
-function drawPaddle(){
+function drawPaddle() {
     //console.log(`Position de la barre : ${barreX}`)
     canvasJeu.beginPath()
     canvasJeu.fillStyle = "gray"
-    canvasJeu.fillRect(barreX ,barreY , barreWidth, barreHeight)
+    canvasJeu.fillRect(barreX, barreY, barreWidth, barreHeight)
     canvasJeu.closePath()
 
 }
@@ -120,17 +131,19 @@ function drawPaddle(){
 /**
  * Fonction principale du script
  */
-export function draw(){
-    canvasJeu.clearRect(0,0,zoneJeu.width,zoneJeu.height)
+export function draw() {
+    canvasJeu.clearRect(0, 0, zoneJeu.width, zoneJeu.height)
     drawBall()
     drawBricks()
     detectCollision()
     drawPaddle()
     displayScore()
+    moveBall()
+    gameOver()
 }
 
 // Détecte les entrées clavier pour le déplacement de la barre
-document.addEventListener('keydown',function(e) {
+document.addEventListener('keydown', function (e) {
     let toucheClavier = e.key
     if (toucheClavier == "ArrowLeft" && barreX != 0) {
         barreX -= 10
@@ -139,59 +152,47 @@ document.addEventListener('keydown',function(e) {
     }
 })
 
-function displayScore(){
+function displayScore() {
     result.innerHTML = `Score : ${score}`
+    result.innerHTML = `Vies : ${nbrVie}`
 }
 
 
 // Permet de détecter les collisions avec les briques et les côtés du canvas
-function detectCollision(){
+function detectCollision() {
 
     let centerPointX = posXBall + widthBall / 2
     let DownPointY = posYBall + heightBall
     let centerMiddleY = posYBall + heightBall / 2
     let rightPointX = posXBall + widthBall
     // Collisions sur les côtés latéraux
-    if(posXBall <= 0 || posXBall + widthBall >= zoneJeu.width){
+    if (posXBall <= 0 || posXBall + widthBall >= zoneJeu.width) {
         dx = -dx
     }
     //Collisions en haut du canvas
-    if(posYBall <= 0 || DownPointY >= zoneJeu.height){
+    if (posYBall <= 0) {
         dy = -dy
     }
 
-
+    if (DownPointY >= zoneJeu.height) {
+        console.log("Vie en moins")
+        nbrVie--;
+        initGame()
+        drawBall()
+    }
 
     //Collisions sur la barre
-    if(centerPointX >= barreX && centerPointX <= barreX + barreWidth && DownPointY >= barreY){
+    if (centerPointX >= barreX && centerPointX <= barreX + barreWidth && DownPointY >= barreY) {
         dy = -dy
     }
 
-    if (barreX <= centerPointX && centerPointX <= (barreX + 23.3) && barreY <= DownPointY){
-        console.log("Balle entre barreX et barreX + 23.3")
-        setInterval(function(){
-            dy = dy + 0.05
-        },5000)
-        dx = 0.75
-        dy = 1
 
-    }else if (((barreX + 46.6) <= centerPointX && centerPointX <= (barreX + barreWidth)) && barreY <= DownPointY) {
-        console.log("Balle entre barreX + 46.6 et barreX + barreWidth")
-        setInterval(function(){
-            dx += 0.2
-            dy += 0.15
-        },5000)
-        dx = 0.75
-        dy = 1
-    }
-
-
-    for(let l = 0; l < nbLines; l++){
-        for(let c = 0; c < nbBricks;c++){
+    for (let l = 0; l < nbLines; l++) {
+        for (let c = 0; c < nbBricks; c++) {
             let b = bricks[l][c]
             let bs = bricks[l][c + 1]
             //Collisions si la balle tape la brique en bas
-            if(centerPointX > b.x  && rightPointX < b.x + brickWidth && b.visible && posYBall <= b.y + brickHeight){
+            if (centerPointX > b.x && rightPointX < b.x + brickWidth && b.visible && posYBall <= b.y + brickHeight) {
                 dy = -dy
                 console.log("Collision côté inférieur")
                 b.visible = false
@@ -199,34 +200,57 @@ function detectCollision(){
             }
 
             //Collisions côté droit de la brique
-            if(posXBall < b.x + brickWidth && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX > b.x + brickWidth){
+            if (posXBall < b.x + brickWidth && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX > b.x + brickWidth) {
                 dx = -dx
                 console.log("Collision côté à droite de la brique")
                 b.visible = false
                 score++;
             }
             //Collision côté gauche
-            if(rightPointX > b.x && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX < b.x + brickWidth){
+            if (rightPointX > b.x && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX < b.x + brickWidth) {
                 dx = -dx
                 console.log("Collision côté à gauche de la brique")
                 b.visible = false
                 score++;
             }
 
-            if(bs != undefined && centerPointX > b.x + brickWidth && centerPointX < bs.x && posYBall <= b.y + brickHeight && b.visible && bs.visible){
-              dy = -dy
+            if (bs != undefined && centerPointX > b.x + brickWidth && centerPointX < bs.x && posYBall <= b.y + brickHeight && b.visible && bs.visible) {
+                dy = -dy
                 b.visible = false
                 bs.visible = false
                 score = score + 2
             }
 
-          //console.log(bs)
+            //console.log(bs)
 
             canvasJeu.beginPath()
             canvasJeu.fillStyle = "green"
-            canvasJeu.fillRect(centerPointX,posYBall,5,5)
+            canvasJeu.fillRect(centerPointX, posYBall, 5, 5)
             canvasJeu.closePath()
 
         }
-      }
     }
+}
+
+function gameOver() {
+    if (nbrVie == 0 && x == 0) {
+        alert("PERDU !!!!")
+        x = 1
+        username = prompt("Username : ")
+        console.log(username)
+        ajaxRequest()
+        //location.reload();
+    }
+}
+
+function ajaxRequest() {
+    let xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            document.getElementById('etatRequete').innerHTML = this.responseText
+        }
+    }
+    xhr.open("POST", "envoi_score.php", true)
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    xhr.send(`username=${username}&score=${score}`)
+}

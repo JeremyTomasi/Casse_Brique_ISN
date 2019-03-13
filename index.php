@@ -12,6 +12,7 @@
       <canvas id="playZone" width="600px" height="400px"></canvas>
 
   <div id="result"></div>
+  <div id="etatRequete"></div>
   </body>
 
 </html>
