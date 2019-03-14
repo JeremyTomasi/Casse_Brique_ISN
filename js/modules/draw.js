@@ -154,7 +154,7 @@ document.addEventListener('keydown', function (e) {
 
 function displayScore() {
     result.innerHTML = `Score : ${score}`
-    result.innerHTML = `Vies : ${nbrVie}`
+    document.getElementById('nbreVies').innerHTML = `Vies : ${nbrVie}`
 }
 
 
@@ -238,19 +238,22 @@ function gameOver() {
         x = 1
         username = prompt("Username : ")
         console.log(username)
-        ajaxRequest()
-        //location.reload();
+        sendScore()
+        setTimeout(function(){
+            location.reload()
+        },2000)
+
     }
 }
 
-function ajaxRequest() {
+function sendScore() {
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             document.getElementById('etatRequete').innerHTML = this.responseText
         }
     }
-    xhr.open("POST", "envoi_score.php", true)
+    xhr.open("POST", "send_score.php", true)
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.send(`username=${username}&score=${score}`)
 }

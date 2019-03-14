@@ -1,3 +1,4 @@
+<?php require('receive_score.php'); ?>
 <!DOCTYPE html>
 <html>
   <head>
@@ -9,10 +10,15 @@
 
   <body>
     <header id="title">Jeu du Casse-Brique</header>
-      <canvas id="playZone" width="600px" height="400px"></canvas>
+    <section id="sectionJeu">
+        <canvas id="playZone" width="600px" height="400px"></canvas>
+        <div id="result"></div>
+        <div id="nbreVies"></div>
+        <div id="etatRequete"></div>
 
-  <div id="result"></div>
-  <div id="etatRequete"></div>
+
+    </section>
+
   </body>
 
 </html>
