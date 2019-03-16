@@ -15,7 +15,6 @@ if($user){
   }
 }
 
-/**
 $insertScore = $pdo->prepare("INSERT INTO highscores (username, score) VALUES (:username,:score)")->execute([
     "username" => $username,
     "score" => $score
@@ -24,7 +23,6 @@ $insertScore = $pdo->prepare("INSERT INTO highscores (username, score) VALUES (:
 if($insertScore){
   echo "Requete ok";
 }
- * **/
 
 
 

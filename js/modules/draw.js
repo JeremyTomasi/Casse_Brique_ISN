@@ -138,7 +138,7 @@ export function draw() {
     detectCollision()
     drawPaddle()
     displayScore()
-    moveBall()
+    //moveBall()
     gameOver()
 }
 
@@ -238,7 +238,11 @@ function gameOver() {
         x = 1
         username = prompt("Username : ")
         console.log(username)
-        sendScore()
+        if(username != null){
+            sendScore()
+        } else {
+            alert('Username non valide !')
+        }
         setTimeout(function(){
             location.reload()
         },2000)

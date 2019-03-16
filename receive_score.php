@@ -1,4 +1,4 @@
 <?php
 require('connexion_bdd.php');
 
-$listHighscores = $pdo->query("SELECT * FROM highscores")->fetchAll();
+$listHighscores = $pdo->query("SELECT * FROM highscores ORDER BY score DESC ")->fetchAll();
