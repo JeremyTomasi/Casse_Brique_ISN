@@ -10,7 +10,7 @@
 }
 
 html {
-  background-image: url("../imgs/bg.jpg");
+  background-image: url("https://www.palaiszelda.com/cado/fds-ecran/botw_6_1920.jpg");
   background-size: 100%;
 }
 
@@ -39,6 +39,7 @@ ul {
   font-size: 12px;
   color: black;
   font-weight: bold;
+  font-family: Raleway;
 }
 
 .liste {
@@ -52,10 +53,48 @@ ul {
   border-radius: 10px;
   box-shadow: 5px 5px 5px gray;
   color: white;
+  font-size: 14px;
 }
 
 .liste:hover {
   border-style: inset;
   box-shadow: -5px -5px 5px gray;
-  color: aquamarine;
+  color: #6C8210;
+}
+
+#sectionHighscores {
+  display : none;
+}
+
+#score, #nbreVies {
+  margin-left: 775px;
+  margin-top: 20px;
+  color: #7B0D27;
+  font-family: Raleway;
+  font-weight: bold;
+}
+
+
+table {
+  color: red;
+  margin-left: 675px;
+  margin-top: 30px;
+  font-family: Raleway;
+}
+
+td {
+  padding: 20px 75px 5px 0px;
+  font-weight: bold;
+}
+
+#etatRequete {
+  color: white;
+  font-family: Raleway;
+  margin-left: 700px;
+  margin-top: 20px;
+}
+
+#playZone {
+  background-image: url("../imgs/canvas.jpg");
+  bakground-size: contain;
 }
