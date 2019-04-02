@@ -8,6 +8,7 @@ export let zoneJeu = document.getElementById('playZone')
 //Définit le canvas en 2D
 export let canvasJeu = zoneJeu.getContext('2d')
 
+
 for(let i = 0; i < liste.length; i++){
     changeMenu(i)
 }
@@ -17,6 +18,3 @@ for(let i = 0; i < liste.length; i++){
  */
 initGame()
 setInterval(draw,10)
-
-//console.log(`Longueur de la zone de jeu : ${zoneJeu.width}px`)
-//console.log(`Hauteur de la zone de jeu : ${zoneJeu.height}px`)

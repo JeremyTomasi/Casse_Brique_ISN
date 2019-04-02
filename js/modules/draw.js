@@ -1,6 +1,6 @@
 import {canvasJeu, zoneJeu} from "../app.js";
 
-let result = document.getElementById("result")
+let scoreElement = document.getElementById("score")
 
 let nbrVie = 3
 // Position initiale sur l'axe X et sur l'axe Y de la barre de déplacement (pt sup gauche)
@@ -30,13 +30,20 @@ let dx = 1
 //Vitesse sur l'axe Y de la balle
 let dy = 1
 
+// Position x de la brique
 let x = 0
 
-let jeuEnRoute
-
+// Score de la partie
 let score = 0
 
+// Username de l'utilisateur
 let username
+
+// Compteur pour le mouvement de la balle
+let z = 0
+
+// Variation de vitesse de la balle
+let w = 0.05
 
 // Crée un objet pour chaque brique
 for (let l = 0; l < nbLines; l++) {
@@ -57,6 +64,7 @@ export function drawBricks() {
             x = 2
             y = y + 30
         }
+        // Couleur des briques
         switch (c) {
             case 0:
                 couleur = "black"
@@ -74,16 +82,22 @@ export function drawBricks() {
                 couleur = "yellow"
                 break
         }
+        // Dessin des briques
         for (let r = 0; r < nbBricks; r++) {
             if (bricks[c][r].visible) {
                 bricks[c][r].x = x
                 bricks[c][r].y = y
                 bricks[c][r].couleur = couleur
+
                 canvasJeu.beginPath()
                 canvasJeu.fillStyle = couleur
                 canvasJeu.fillRect(x, y, brickWidth, brickHeight)
                 canvasJeu.closePath()
 
+                canvasJeu.shadowColor = "gray"
+                canvasJeu.shadowBlur = 5
+                canvasJeu.shadowOffsetX = 10
+                canvasJeu.shadowOffsetY = 10
             }
             x = x + brickWidth + 5
         }
@@ -103,6 +117,7 @@ function drawBall() {
 
 }
 
+//Permet de faire bouger la balle
 function moveBall() {
     posYBall -= dy
     posXBall += dx
@@ -120,7 +135,6 @@ export function initGame() {
  * Permet de dessiner la barre de déplacement
  */
 function drawPaddle() {
-    //console.log(`Position de la barre : ${barreX}`)
     canvasJeu.beginPath()
     canvasJeu.fillStyle = "gray"
     canvasJeu.fillRect(barreX, barreY, barreWidth, barreHeight)
@@ -132,15 +146,26 @@ function drawPaddle() {
  * Fonction principale du script
  */
 export function draw() {
+    // Efface le canvas afin de le réactualiser
     canvasJeu.clearRect(0, 0, zoneJeu.width, zoneJeu.height)
-    drawBall()
-    drawBricks()
-    detectCollision()
+    // Dessine la barre de déplacement
     drawPaddle()
-    displayScore()
-    //moveBall()
-    gameOver()
-}
+    // Dessine les briques dans le canvas
+    drawBricks()
+    //Dessine la balle dans le canvas
+    drawBall()
+    // Détecte les collisions de la balle dans le canvas
+    detectCollision()
+    // Affiche le score sur la page
+    displayInfosGame()
+    endGame()
+    if(z == 1){
+      moveBall()
+    }
+    zoneJeu.addEventListener('click',function(){
+      z = 1
+    })
+    }
 
 // Détecte les entrées clavier pour le déplacement de la barre
 document.addEventListener('keydown', function (e) {
@@ -152,8 +177,10 @@ document.addEventListener('keydown', function (e) {
     }
 })
 
-function displayScore() {
-    result.innerHTML = `Score : ${score}`
+
+// Affiche le score à l'emplacement dédié
+function displayInfosGame() {
+    scoreElement.innerHTML = `Score : ${score}`
     document.getElementById('nbreVies').innerHTML = `Vies : ${nbrVie}`
 }
 
@@ -175,14 +202,17 @@ function detectCollision() {
     }
 
     if (DownPointY >= zoneJeu.height) {
-        console.log("Vie en moins")
         nbrVie--;
+        dx = 1
+        dy = 1
+
         initGame()
         drawBall()
     }
 
+
     //Collisions sur la barre
-    if (centerPointX >= barreX && centerPointX <= barreX + barreWidth && DownPointY >= barreY) {
+    if (centerPointX >= barreX && centerPointX <= barreX + barreWidth && DownPointY >= barreY && DownPointY <= barreY + barreHeight) {
         dy = -dy
     }
 
@@ -194,22 +224,19 @@ function detectCollision() {
             //Collisions si la balle tape la brique en bas
             if (centerPointX > b.x && rightPointX < b.x + brickWidth && b.visible && posYBall <= b.y + brickHeight) {
                 dy = -dy
-                console.log("Collision côté inférieur")
                 b.visible = false
                 score++;
             }
 
             //Collisions côté droit de la brique
             if (posXBall < b.x + brickWidth && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX > b.x + brickWidth) {
-                dx = -dx
-                console.log("Collision côté à droite de la brique")
+                dx = -dx - w
                 b.visible = false
                 score++;
             }
             //Collision côté gauche
             if (rightPointX > b.x && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX < b.x + brickWidth) {
-                dx = -dx
-                console.log("Collision côté à gauche de la brique")
+                dx = -dx - w
                 b.visible = false
                 score++;
             }
@@ -220,44 +247,55 @@ function detectCollision() {
                 bs.visible = false
                 score = score + 2
             }
-
-            //console.log(bs)
-
-            canvasJeu.beginPath()
-            canvasJeu.fillStyle = "green"
-            canvasJeu.fillRect(centerPointX, posYBall, 5, 5)
-            canvasJeu.closePath()
-
         }
     }
 }
 
-function gameOver() {
+//Détecte le game over de la partie
+function endGame() {
+    // Si l'utilisateur n'a plus de vies
     if (nbrVie == 0 && x == 0) {
-        alert("PERDU !!!!")
+        z = 0
+        alert("5 en allemand!!!!")
         x = 1
         username = prompt("Username : ")
-        console.log(username)
-        if(username != null){
-            sendScore()
-        } else {
-            alert('Username non valide !')
+        while(username == "" || username == null){
+          alert('User non valide')
+          username = prompt("Username : ")
         }
+        sendScore()
         setTimeout(function(){
-            location.reload()
+          location.reload()
+        },2000)
+      }
+      // Si l'utilisateur a cassé toutes les briques
+      else if(nbrVie != 0 && score >= 60){
+        z = 0
+        while(username == "" || username == null){
+          alert('User non valide')
+          username = prompt("Username : ")
+        }
+        sendScore()
+        setTimeout(function(){
+          location.reload()
         },2000)
 
-    }
+      }
 }
 
+//Envoie les scores dans la Base de Données
 function sendScore() {
+    // Initialise l'AJAX
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             document.getElementById('etatRequete').innerHTML = this.responseText
         }
     }
+    // Ouvre la requête
     xhr.open("POST", "send_score.php", true)
+    // Ajoute un header à la requête afin de la traiter comme un formulaire
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+    // Envoie la requête AJAX
     xhr.send(`username=${username}&score=${score}`)
 }

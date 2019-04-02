@@ -18,7 +18,7 @@
     </nav>
     <section id="sectionJeu">
         <canvas id="playZone" width="600px" height="400px"></canvas>
-        <div id="result"></div>
+        <div id="score"></div>
         <div id="nbreVies"></div>
         <div id="etatRequete"></div>
     </section>
@@ -27,8 +27,8 @@
     <table>
         <thead>
             <tr>
-                <td>Username : </td>
-                <td>Score :</td>
+                <td>Username</td>
+                <td>Score</td>
             </tr>
         </thead>
         <tbody>
