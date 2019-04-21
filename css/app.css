@@ -12,6 +12,7 @@
 html {
   background-image: url("https://www.palaiszelda.com/cado/fds-ecran/botw_6_1920.jpg");
   background-size: 100%;
+  /*background-repeat: no-repeat; */
 }
 
 #title {
