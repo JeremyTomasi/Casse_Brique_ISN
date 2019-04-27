@@ -219,32 +219,33 @@ function detectCollision() {
 
     for (let l = 0; l < nbLines; l++) {
         for (let c = 0; c < nbBricks; c++) {
-            let b = bricks[l][c]
-            let bs = bricks[l][c + 1]
+            let brick = bricks[l][c]
+            let nextBrick = bricks[l][c + 1]
+
             //Collisions si la balle tape la brique en bas
-            if (centerPointX > b.x && rightPointX < b.x + brickWidth && b.visible && posYBall <= b.y + brickHeight) {
-                dy = -dy
-                b.visible = false
+            if (centerPointX > brick.x && rightPointX < brick.x + brickWidth && brick.visible && posYBall <= brick.y + brickHeight) {
+                dy = -dy - w
+                brick.visible = false
                 score++;
             }
 
             //Collisions côté droit de la brique
-            if (posXBall < b.x + brickWidth && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX > b.x + brickWidth) {
+            if (posXBall < brick.x + brickWidth && centerMiddleY < brick.y + brickHeight && centerMiddleY > brick.y && brick.visible && rightPointX > brick.x + brickWidth) {
                 dx = -dx - w
-                b.visible = false
+                brick.visible = false
                 score++;
             }
             //Collision côté gauche
-            if (rightPointX > b.x && centerMiddleY < b.y + brickHeight && centerMiddleY > b.y && b.visible && rightPointX < b.x + brickWidth) {
+            if (rightPointX > brick.x && centerMiddleY < brick.y + brickHeight && centerMiddleY > brick.y && brick.visible && rightPointX < brick.x + brickWidth) {
                 dx = -dx - w
-                b.visible = false
+                brick.visible = false
                 score++;
             }
 
-            if (bs != undefined && centerPointX > b.x + brickWidth && centerPointX < bs.x && posYBall <= b.y + brickHeight && b.visible && bs.visible) {
-                dy = -dy
-                b.visible = false
-                bs.visible = false
+            if (nextBrick != undefined && centerPointX > brick.x + brickWidth && centerPointX < nextBrick.x && posYBall <= brick.y + brickHeight && brick.visible && nextBrick.visible) {
+                dy = -dy - w
+                brick.visible = false
+                nextBrick.visible = false
                 score = score + 2
             }
         }
@@ -256,7 +257,7 @@ function endGame() {
     // Si l'utilisateur n'a plus de vies
     if (nbrVie == 0 && x == 0) {
         z = 0
-        alert("5 en allemand!!!!")
+        alert("Game Over")
         x = 1
         username = prompt("Username : ")
         while(username == "" || username == null){

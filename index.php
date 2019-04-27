@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/app.css">
     <title>Casse-Brique</title>
     <script src="js/app.js" type="module" defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   </head>
 
   <body>
@@ -27,20 +28,30 @@
     <table>
         <thead>
             <tr>
+                <td>Position</td>
                 <td>Username</td>
                 <td>Score</td>
             </tr>
         </thead>
         <tbody>
-            <?php foreach($listHighscores as $highscore): ?>
+            <?php
+            $compteur = 1;
+            foreach($listHighscores as $highscore): ?>
             <tr>
+                <td>
+                    <?= $compteur; ?>
+                </td>
                 <td><?= $highscore->username; ?></td>
                 <td><?= $highscore->score; ?></td>
             </tr>
-            <?php endforeach; ?>
+            <?php
+            $compteur++;
+            endforeach; ?>
         </tbody>
     </table>
   </section>
+
+    <p id="copyright">&copy; Jérémy Tomasi , Edouard Fontaine & et Nicolas Leriche</p>
 
   </body>
 
