@@ -1,4 +1,4 @@
-import {canvasJeu, zoneJeu} from "../app.js";
+//import {canvasJeu, zoneJeu} from "../app.js";
 
 let scoreElement = document.getElementById("score")
 
@@ -44,6 +44,13 @@ let z = 0
 
 // Variation de vitesse de la balle
 let w = 0.05
+
+// Récupère l'élément canvas
+export let zoneJeu = document.getElementById('playZone')
+
+
+//Définit le canvas en 2D
+export let canvasJeu = zoneJeu.getContext('2d')
 
 // Crée un objet pour chaque brique
 for (let l = 0; l < nbLines; l++) {
