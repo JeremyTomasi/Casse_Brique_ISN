@@ -267,9 +267,12 @@ function endGame() {
         alert("Game Over")
         x = 1
         username = prompt("Username : ")
-        while(username == "" || username == null){
-          alert('User non valide')
-          username = prompt("Username : ")
+        let regex = new RegExp("\\w")
+        let verif = regex.test(username)
+        while(verif === false || username == null){
+            alert('Username non valide')
+            username = prompt("Username : ")
+            verif = regex.test(username)
         }
         sendScore()
         setTimeout(function(){
@@ -279,15 +282,17 @@ function endGame() {
       // Si l'utilisateur a cassé toutes les briques
       else if(nbrVie != 0 && score >= 60){
         z = 0
-        while(username == "" || username == null){
-          alert('User non valide')
-          username = prompt("Username : ")
+        let regex = new RegExp("\\w")
+        let verif = regex.test(username)
+        while(verif === false || username == null){
+            alert('Username non valide')
+            username = prompt("Username : ")
+            verif = regex.test(username)
         }
         sendScore()
         setTimeout(function(){
           location.reload()
         },2000)
-
       }
 }
 
