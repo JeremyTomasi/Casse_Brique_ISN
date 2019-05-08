@@ -1,5 +1,3 @@
-//import {canvasJeu, zoneJeu} from "../app.js";
-
 let scoreElement = document.getElementById("score")
 
 let nbrVie = 3
@@ -40,10 +38,10 @@ let score = 0
 let username
 
 // Compteur pour le mouvement de la balle
-let z = 0
+let isMoved = 0
 
 // Variation de vitesse de la balle
-let w = 0.05
+let speedBall = 0.05
 
 // Récupère l'élément canvas
 export let zoneJeu = document.getElementById('playZone')
@@ -166,11 +164,11 @@ export function draw() {
     // Affiche le score sur la page
     displayInfosGame()
     endGame()
-    if(z == 1){
+    if(isMoved == 1){
       moveBall()
     }
     zoneJeu.addEventListener('click',function(){
-      z = 1
+      isMoved = 1
     })
     }
 
@@ -231,26 +229,26 @@ function detectCollision() {
 
             //Collisions si la balle tape la brique en bas
             if (centerPointX > brick.x && rightPointX < brick.x + brickWidth && brick.visible && posYBall <= brick.y + brickHeight) {
-                dy = -dy - w
+                dy = -dy - speedBall
                 brick.visible = false
                 score++;
             }
 
             //Collisions côté droit de la brique
             if (posXBall < brick.x + brickWidth && centerMiddleY < brick.y + brickHeight && centerMiddleY > brick.y && brick.visible && rightPointX > brick.x + brickWidth) {
-                dx = -dx - w
+                dx = -dx - speedBall
                 brick.visible = false
                 score++;
             }
             //Collision côté gauche
             if (rightPointX > brick.x && centerMiddleY < brick.y + brickHeight && centerMiddleY > brick.y && brick.visible && rightPointX < brick.x + brickWidth) {
-                dx = -dx - w
+                dx = -dx - speedBall
                 brick.visible = false
                 score++;
             }
 
             if (nextBrick != undefined && centerPointX > brick.x + brickWidth && centerPointX < nextBrick.x && posYBall <= brick.y + brickHeight && brick.visible && nextBrick.visible) {
-                dy = -dy - w
+                dy = -dy - speedBall
                 brick.visible = false
                 nextBrick.visible = false
                 score = score + 2
@@ -263,7 +261,7 @@ function detectCollision() {
 function endGame() {
     // Si l'utilisateur n'a plus de vies
     if (nbrVie == 0 && x == 0) {
-        z = 0
+        isMoved = 0
         alert("Game Over")
         x = 1
         username = prompt("Username : ")
@@ -281,7 +279,7 @@ function endGame() {
       }
       // Si l'utilisateur a cassé toutes les briques
       else if(nbrVie != 0 && score >= 60){
-        z = 0
+        isMoved = 0
         let regex = new RegExp("\\w")
         let verif = regex.test(username)
         while(verif === false || username == null){
