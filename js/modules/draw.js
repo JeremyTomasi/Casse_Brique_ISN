@@ -35,7 +35,7 @@ let nbreFin = 0
 let score = 0
 
 // Username de l'utilisateur
-let username
+let username = null
 
 // Compteur pour le mouvement de la balle
 let isMoved = 0
