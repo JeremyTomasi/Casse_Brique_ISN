@@ -28,8 +28,8 @@ let dx = 1
 //Vitesse sur l'axe Y de la balle
 let dy = 1
 
-// Position x de la brique
-let x = 0
+// Nbre de fins effectués par la boucle de fin de partie
+let nbreFin = 0
 
 // Score de la partie
 let score = 0
@@ -61,11 +61,15 @@ for (let l = 0; l < nbLines; l++) {
 // Permet de dessiner les briques
 export function drawBricks() {
 
+    // Position x de la brique
     let x = 2
+    // Position y de la brique
     let y = 20
+
+    // Couleur de la rangée de briqueq
     let couleur;
     for (let c = 0; c < nbLines; c++) {
-        if (c != 0) {
+        if (c !== 0) {
             x = 2
             y = y + 30
         }
@@ -99,11 +103,14 @@ export function drawBricks() {
                 canvasJeu.fillRect(x, y, brickWidth, brickHeight)
                 canvasJeu.closePath()
 
+                // Ajout d'ombres sur les briques
                 canvasJeu.shadowColor = "gray"
                 canvasJeu.shadowBlur = 5
                 canvasJeu.shadowOffsetX = 10
                 canvasJeu.shadowOffsetY = 10
             }
+
+            //Décale la position x pour la prochaine brique
             x = x + brickWidth + 5
         }
     }
@@ -163,10 +170,13 @@ export function draw() {
     detectCollision()
     // Affiche le score sur la page
     displayInfosGame()
+    // Détecte la fin du jeu
     endGame()
+    // Détecte si la balle est en mouvement ou pas
     if(isMoved == 1){
       moveBall()
     }
+    //Au clic de la souris, la balle se met à bouger
     zoneJeu.addEventListener('click',function(){
       isMoved = 1
     })
@@ -229,6 +239,7 @@ function detectCollision() {
 
             //Collisions si la balle tape la brique en bas
             if (centerPointX > brick.x && rightPointX < brick.x + brickWidth && brick.visible && posYBall <= brick.y + brickHeight) {
+                // Accélère la vitesse de la balle et rend la brique non visible
                 dy = -dy - speedBall
                 brick.visible = false
                 score++;
@@ -236,18 +247,21 @@ function detectCollision() {
 
             //Collisions côté droit de la brique
             if (posXBall < brick.x + brickWidth && centerMiddleY < brick.y + brickHeight && centerMiddleY > brick.y && brick.visible && rightPointX > brick.x + brickWidth) {
+                // Accélère la vitesse de la balle et rend la brique non visible
                 dx = -dx - speedBall
                 brick.visible = false
                 score++;
             }
             //Collision côté gauche
             if (rightPointX > brick.x && centerMiddleY < brick.y + brickHeight && centerMiddleY > brick.y && brick.visible && rightPointX < brick.x + brickWidth) {
+                // Accélère la vitesse de la balle et rend la brique non visible
                 dx = -dx - speedBall
                 brick.visible = false
                 score++;
             }
 
-            if (nextBrick != undefined && centerPointX > brick.x + brickWidth && centerPointX < nextBrick.x && posYBall <= brick.y + brickHeight && brick.visible && nextBrick.visible) {
+            if (nextBrick !== undefined && centerPointX > brick.x + brickWidth && centerPointX < nextBrick.x && posYBall <= brick.y + brickHeight && brick.visible && nextBrick.visible) {
+                // Accélère la vitesse de la balle et rend la brique et la brique suivante non visible
                 dy = -dy - speedBall
                 brick.visible = false
                 nextBrick.visible = false
@@ -260,10 +274,10 @@ function detectCollision() {
 //Détecte le game over de la partie
 function endGame() {
     // Si l'utilisateur n'a plus de vies
-    if (nbrVie == 0 && x == 0) {
+    if (nbrVie === 0 && nbreFin === 0) {
         isMoved = 0
         alert("Game Over")
-        x = 1
+        nbreFin = 1
         username = prompt("Username : ")
         let regex = new RegExp("\\w")
         let verif = regex.test(username)
@@ -278,7 +292,7 @@ function endGame() {
         },2000)
       }
       // Si l'utilisateur a cassé toutes les briques
-      else if(nbrVie != 0 && score >= 60){
+      else if(nbrVie !== 0 && score >= 60){
         isMoved = 0
         let regex = new RegExp("\\w")
         let verif = regex.test(username)
@@ -299,7 +313,8 @@ function sendScore() {
     // Initialise l'AJAX
     let xhr = new XMLHttpRequest()
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            // Récupère la réponse de la requête
             document.getElementById('etatRequete').innerHTML = this.responseText
         }
     }
