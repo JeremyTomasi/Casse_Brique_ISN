@@ -1,0 +1,16 @@
+{
+  "name": "lugurbal/Casse_Brique_ISN",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "free",
+  "authors": [
+    {
+      "name": "lugurbal",
+      "email": "lugurbaldev@outlook.com"
+    }
+  ],
+  "require": {
+    "vlucas/phpdotenv": "5.1.x-dev",
+    "ext-pdo": "*"
+  }
+}

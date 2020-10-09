@@ -1,4 +1,5 @@
-<?php require('receive_score.php'); ?>
+<?php
+require('receive_score.php'); ?>
 <!DOCTYPE html>
 <html>
   <head>

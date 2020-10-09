@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  web:
+    build:
+      context: .
+    working_dir: "/usr/src/myapp"
+    ports:
+    - "80:80"
+    volumes:
+    - "./:/usr/src/myapp"
+
+    command: "php -S 0.0.0.0:80 -d display_errors=1"
+  bdd:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: Aperture_AC59
+      MYSQL_USER: projetisn
+      MYSQL_PASSWORD: projetisn
+      MYSQL_DATABASE: projetisn
+    restart: always
+    volumes:
+    - "./mysql:/var/lib/mysql"
+    ports:
+    - "3306:3306"
+  pma:
+    image: phpmyadmin
+    restart: always
+    environment:
+      - PMA_ARBITRARY=1
+    links:
+      - bdd
+    ports:
+    - "8080:80"
+  composer:
+    image: composer
+    command: update
+    volumes:
+    - "./:/app"

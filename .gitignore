@@ -1,4 +1,7 @@
 .idea
 phpinfo.php
 connexion_bdd.php
-adminer.php
+.env
+composer.lock
+vendor/
+mysql/
